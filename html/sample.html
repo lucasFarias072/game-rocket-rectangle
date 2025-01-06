@@ -275,30 +275,15 @@
     }
 
     #spaceship-area #objects-frame #spaceship {
-      color: white;
       font-size: 2rem;
       transform: rotate(-45deg);
       transition: all linear .5s;
       text-align: center;
-      text-shadow: 0 0 1rem rgb(0, 200, 250);
+      text-shadow: 0 0 1rem black;
       
       position: relative;
       top: 0;
       left: 0;
-      
-      /*
-        border: aqua solid .1px;
-        clip-path: circle(90% / 90%);
-        line-height: 2rem;
-
-        border-radius: 
-        (
-          top-left corner, 
-          top-right corner, 
-          bottom-right corner, 
-          bottom-left corner
-        ):
-      */
       
       border-radius: 70% 0 50% 0;
       display: flex;
@@ -1056,7 +1041,7 @@
       return modular >= 0.5 ? parseInt(value) + 1 : parseInt(value) 
     }
 
-    const setupProgressBar = (percentageObtained, progressBarTag, percentageTag) => {
+    const setupProgressBar = (percentageObtained, progressBarTag, percentageTag, alternativeMsg) => {
       let outset = 0
       
       const loop = setInterval(() => {
@@ -1070,7 +1055,7 @@
         }
 
         progressBarTag.style.backgroundImage = `linear-gradient(to top, rgb(0, 0, 200) ${outset}%, white ${outset + 1}%)`
-        percentageTag.textContent = `${outset}%`
+        percentageTag.textContent = percentageObtained === 0 ? alternativeMsg : `${outset}%`
         percentageTag.style.fontSize = `${getFloat(1.2, 1.8)}rem`
       }, 100)
     }
@@ -1265,13 +1250,24 @@
           }
           
           // Drawing has 50%, others are calculated in the standard way
-          const thisTurnDexterity = lesserValue === greaterValue ? 50 : calculatePerformance(lesserValue, greaterValue)
+          const thisTurnDexterity = lesserValue === greaterValue 
+          ? 50 
+          : calculatePerformance(lesserValue, greaterValue)
 
           // Final steps to dexterity calculus and hide clock
           const discount = getRounded(thisTurnDexterity / roundedCompletionTimeSliceValue)
           const shapedPerformance = thisTurnDexterity - discount
           const bonus = getRounded(calculatePerformance(completionTime, shapedPerformance))
-          const realPerformance = getRounded(completionTime + bonus) - clicksInfluenceValue
+          let realPerformance = completionTime <= 70 
+          ? getRounded(completionTime + bonus) - clicksInfluenceValue
+          : getRounded((completionTime / 2) - bonus) - clicksInfluenceValue
+
+          // When there were more mistakes then right answers
+          if (lesserValue > 0) {
+            const slice = realPerformance - parseInt(realPerformance / 1.2)
+            realPerformance -= slice
+          }
+          
           clock.classList.add("std-vanished")
           
           correct.textContent = `acertos: ${captured.length}`
@@ -1280,14 +1276,18 @@
           // console.log("--o ", [completionTime, bonus, totalClicks, clicksInfluenceValue])
           
           // It seems this function only works if the origin loop is ceased, other wise, there will be lots of issues 
-          setupProgressBar(realPerformance, dexterityBar, dexterityPercentage)
+          realPerformance <= 0 
+          ? setupProgressBar(0, dexterityBar, dexterityPercentage, "desclassificado!")
+          : setupProgressBar(realPerformance, dexterityBar, dexterityPercentage, "")
           
-          // Side info about user's performance (calculated within this if statement)
           afterEndGameArea.classList.remove("std-vanished")
-          endGameInfos[0].textContent = `${completionTime} seg`
-          endGameInfos[1].textContent = `${totalClicks}`
-          endGameInfos[2].textContent = `${clicksInfluenceValue}%`
-
+          
+          const stats = [`${completionTime} seg`, `${totalClicks}`, `${clicksInfluenceValue}%`]
+          
+          endGameInfos.forEach((tag, pos) => {
+            realPerformance <= 0 ? tag.textContent = `🚫` : tag.textContent = stats[pos]
+          })
+          
           clearInterval(loop)
           
         }

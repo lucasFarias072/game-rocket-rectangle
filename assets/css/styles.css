@@ -266,30 +266,15 @@ li {
 }
 
 #spaceship-area #objects-frame #spaceship {
-  color: white;
   font-size: 2rem;
   transform: rotate(-45deg);
   transition: all linear .5s;
   text-align: center;
-  text-shadow: 0 0 1rem rgb(0, 200, 250);
+  text-shadow: 0 0 1rem black;
   
   position: relative;
   top: 0;
   left: 0;
-  
-  /*
-    border: aqua solid .1px;
-    clip-path: circle(90% / 90%);
-    line-height: 2rem;
-
-    border-radius: 
-    (
-      top-left corner, 
-      top-right corner, 
-      bottom-right corner, 
-      bottom-left corner
-    ):
-  */
   
   border-radius: 70% 0 50% 0;
   display: flex;

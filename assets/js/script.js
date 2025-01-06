@@ -434,7 +434,7 @@ const getRounded = (value) => {
   return modular >= 0.5 ? parseInt(value) + 1 : parseInt(value) 
 }
 
-const setupProgressBar = (percentageObtained, progressBarTag, percentageTag) => {
+const setupProgressBar = (percentageObtained, progressBarTag, percentageTag, alternativeMsg) => {
   let outset = 0
   
   const loop = setInterval(() => {
@@ -448,7 +448,7 @@ const setupProgressBar = (percentageObtained, progressBarTag, percentageTag) => 
     }
 
     progressBarTag.style.backgroundImage = `linear-gradient(to top, rgb(0, 0, 200) ${outset}%, white ${outset + 1}%)`
-    percentageTag.textContent = `${outset}%`
+    percentageTag.textContent = percentageObtained === 0 ? alternativeMsg : `${outset}%`
     percentageTag.style.fontSize = `${getFloat(1.2, 1.8)}rem`
   }, 100)
 }
@@ -643,13 +643,24 @@ const loop = setInterval(() => {
       }
       
       // Drawing has 50%, others are calculated in the standard way
-      const thisTurnDexterity = lesserValue === greaterValue ? 50 : calculatePerformance(lesserValue, greaterValue)
+      const thisTurnDexterity = lesserValue === greaterValue 
+      ? 50 
+      : calculatePerformance(lesserValue, greaterValue)
 
       // Final steps to dexterity calculus and hide clock
       const discount = getRounded(thisTurnDexterity / roundedCompletionTimeSliceValue)
       const shapedPerformance = thisTurnDexterity - discount
       const bonus = getRounded(calculatePerformance(completionTime, shapedPerformance))
-      const realPerformance = getRounded(completionTime + bonus) - clicksInfluenceValue
+      let realPerformance = completionTime <= 70 
+      ? getRounded(completionTime + bonus) - clicksInfluenceValue
+      : getRounded((completionTime / 2) - bonus) - clicksInfluenceValue
+      
+      // When there were more mistakes then right answers
+      if (lesserValue > 0) {
+        const slice = realPerformance - parseInt(realPerformance / 1.2)
+        realPerformance -= slice
+      }
+      
       clock.classList.add("std-vanished")
       
       correct.textContent = `acertos: ${captured.length}`
@@ -658,13 +669,17 @@ const loop = setInterval(() => {
       // console.log("--o ", [completionTime, bonus, totalClicks, clicksInfluenceValue])
       
       // It seems this function only works if the origin loop is ceased, other wise, there will be lots of issues 
-      setupProgressBar(realPerformance, dexterityBar, dexterityPercentage)
+      realPerformance <= 0 
+      ? setupProgressBar(0, dexterityBar, dexterityPercentage, "desclassificado!")
+      : setupProgressBar(realPerformance, dexterityBar, dexterityPercentage, "")
       
-      // Side info about user's performance (calculated within this if statement)
       afterEndGameArea.classList.remove("std-vanished")
-      endGameInfos[0].textContent = `${completionTime} seg`
-      endGameInfos[1].textContent = `${totalClicks}`
-      endGameInfos[2].textContent = `${clicksInfluenceValue}%`
+      
+      const stats = [`${completionTime} seg`, `${totalClicks}`, `${clicksInfluenceValue}%`]
+      
+      endGameInfos.forEach((tag, pos) => {
+        realPerformance <= 0 ? tag.textContent = `🚫` : tag.textContent = stats[pos]
+      })
 
       clearInterval(loop)
       
