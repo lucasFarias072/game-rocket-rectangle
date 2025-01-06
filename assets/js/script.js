@@ -660,6 +660,27 @@ const loop = setInterval(() => {
         const slice = realPerformance - parseInt(realPerformance / 1.2)
         realPerformance -= slice
       }
+
+      const difficulty = localStorage.getItem("difficulty-background")
+      if (difficulty === "green" && lesserValue <= 0) {
+        if (completionTime <= 20) {
+          realPerformance += 7
+        } else if (completionTime <= 30) {
+          realPerformance += 3
+        }
+      } else if (difficulty === "orange" && lesserValue <= 0) {
+        if (completionTime <= 45) {
+          realPerformance += 7
+        } else if (completionTime <= 55) {
+          realPerformance += 3
+        }
+      } else if (difficulty === "red" && lesserValue <= 0) {
+        if (completionTime <= 60) {
+          realPerformance += 7
+        } else if (completionTime <= 66) {
+          realPerformance += 3
+        }
+      }
       
       clock.classList.add("std-vanished")
       
