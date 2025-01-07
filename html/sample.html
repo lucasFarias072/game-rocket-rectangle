@@ -605,6 +605,80 @@
   </main>
   <script>
 
+    class RocketMath {
+      // In the moment the lesser value becomes greater than the supposed greater value: result will be 0
+      // Therefore, users who do not make mistakes have, in the outset moment: 100%
+      // Therefore, users who have more mistakes than dexterity have, in the outset moment: 0%
+      calculatePerformance(lesserVal, greaterVal) {
+        let lesser
+        let greater
+        let pipe
+        let trigger = false
+        if (lesserVal > greaterVal) {
+          pipe = greaterVal
+          lesser = pipe
+          greater = lesser
+          trigger = true
+        } 
+        return trigger ? parseFloat(100 - ((lesser / greater) * 100)) : parseFloat(100 - ((lesserVal / greaterVal) * 100))
+      }
+
+      testCalculatePerformance() {
+        let tail = 0
+        const head = 5
+        for (let i = 0; i < 10; i++) {
+          console.log(`this.calculatePerformance(${tail}, ${head}) = ${this.calculatePerformance(tail, head)}`)
+          tail++
+        }
+      }
+
+      getRounded (value) {
+        let modular = parseInt(value) - value
+        modular = -modular
+        return modular >= 0.5 ? parseInt(value) + 1 : parseInt(value) 
+      }
+
+      getValueSlice(value, sliceValue) {
+        return value * sliceValue
+      }
+
+      calculateClicksInfluence(performanceTailValue, sliceValue, numberClicks) {
+        let backupForNull
+        let currentScore
+        if (performanceTailValue === 0) {
+          backupForNull = 50
+          const badPerformanceraise = this.getRounded(this.getValueSlice(backupForNull, sliceValue))
+          currentScore = backupForNull + badPerformanceraise
+        } else {
+          const goodPerformanceraise = this.getRounded(this.getValueSlice(performanceTailValue, sliceValue / 1.2))
+          currentScore = performanceTailValue + goodPerformanceraise
+        }
+        
+        for (let i = 0; i < numberClicks; i++) {
+          if (performanceTailValue === 0) {
+            currentScore -= 0.01
+          } else {
+            currentScore -= 0.07
+          }
+        }
+        return currentScore
+      }
+
+      calculateTimeInfluence(performanceValue, completionTime) {
+        let currentScore = performanceValue
+        if (currentScore > 0) {
+          for (let i = 0; i < completionTime; i++) {
+            currentScore -= this.getValueSlice(completionTime, 0.01)
+          }
+        }
+        return currentScore
+      }
+  
+      getEndPerformanceRate(performanceValue) {
+        return performanceValue < 0 ? 0 : parseFloat(`${performanceValue}`).toFixed(2)
+      }
+    }
+
     class StorageObject {
       checkExistance(keyName) {
         return localStorage.getItem(keyName) != null
@@ -632,6 +706,8 @@
       e: "linear-gradient(15deg, rgb(255, 66, 99), rgb(255, 0, 200), rgb(255, 0, 100))",
       custom: "linear-gradient(15deg, rgb(200, 100, 0), rgb(0, 0, 100), rgb(33, 66, 99))"
     }
+
+    const calculusInstance = new RocketMath()
 
     // Avoid too many "localSotrage.getItem" calls
     const storageInstance = new StorageObject()
@@ -1027,20 +1103,6 @@
       ]
     }
 
-    const calculatePerformance = (lesserVal, greaterVal) => {
-      return parseFloat(100 - ((lesserVal / greaterVal) * 100))
-    }
-
-    const getValueSlice = (value, sliceValue) => {
-      return value * sliceValue
-    }
-
-    const getRounded = (value) => {
-      let modular = parseInt(value) - value
-      modular = -modular
-      return modular >= 0.5 ? parseInt(value) + 1 : parseInt(value) 
-    }
-
     const setupProgressBar = (percentageObtained, progressBarTag, percentageTag, alternativeMsg) => {
       let outset = 0
       
@@ -1049,6 +1111,10 @@
         
         if (outset + increased > percentageObtained) {
           outset += (percentageObtained - outset)
+          // This is here because I wanted the real percentage to be shown
+          const changePercentageAtEndLoop = setInterval(() => {
+            percentageTag.textContent = parseFloat(alternativeMsg) > 100 ? "100%" : `${alternativeMsg}%`
+          }, 100)
           clearInterval(loop)
         } else {
           outset += increased
@@ -1058,6 +1124,7 @@
         percentageTag.textContent = percentageObtained === 0 ? alternativeMsg : `${outset}%`
         percentageTag.style.fontSize = `${getFloat(1.2, 1.8)}rem`
       }, 100)
+      
     }
 
     const compete = (chance) => {
@@ -1223,71 +1290,11 @@
         // End game when max score reached
         if (captured.length === 10) {
 
-          // Get clicks report and include it into the dexterity calculus
-          const totalClicks = parseInt(localStorage.getItem("last-number-clicks"))
-          const totalClicksSlice = getValueSlice(totalClicks, 0.15)
-          const clicksInfluenceValue = getRounded(totalClicksSlice / 1.5)
-
-          // Starting resources to calculate performance/dexterity (final ones below)
-          const completionTime = parseInt(localStorage.getItem("last-clock"))
-          const completionTimeSliceValue = getValueSlice(completionTime, 0.15)
-          const roundedCompletionTimeSliceValue = getRounded(completionTimeSliceValue)
-
           // Avoids too many "classList" calls in columns
           controlWindowsView([engineCheat, giveUpBtn, dexterityBar, rebootBtn, rectanglesArea], [0, 0, 1, 1, 0], "std-vanished")
           
           // Highlight result area
           spaceshipArea.style.height = "100vh"
-          
-          // Dexterity procedures
-          let lesserValue = captured.length < capturedIncorrect.length ? captured.length : capturedIncorrect.length
-          let greaterValue = captured.length < capturedIncorrect.length ? capturedIncorrect.length : captured.length
-          
-          // For negative scores
-          if (greaterValue > 10) {
-            lesserValue = greaterValue - lesserValue
-            greaterValue = 10
-          }
-          
-          // Drawing has 50%, others are calculated in the standard way
-          const thisTurnDexterity = lesserValue === greaterValue 
-          ? 50 
-          : calculatePerformance(lesserValue, greaterValue)
-
-          // Final steps to dexterity calculus and hide clock
-          const discount = getRounded(thisTurnDexterity / roundedCompletionTimeSliceValue)
-          const shapedPerformance = thisTurnDexterity - discount
-          const bonus = getRounded(calculatePerformance(completionTime, shapedPerformance))
-          let realPerformance = completionTime <= 70 
-          ? getRounded(completionTime + bonus) - clicksInfluenceValue
-          : getRounded((completionTime / 2) - bonus) - clicksInfluenceValue
-
-          // When there were more mistakes then right answers
-          if (lesserValue > 0) {
-            const slice = realPerformance - parseInt(realPerformance / 1.2)
-            realPerformance -= slice
-          }
-          
-          const difficulty = localStorage.getItem("difficulty-background")
-          if (difficulty === "green" && lesserValue <= 0) {
-            if (completionTime <= 20) {
-              realPerformance += 7
-            } else if (completionTime <= 30) {
-              realPerformance += 3
-            }
-          } else if (difficulty === "orange" && lesserValue <= 0) {
-            if (completionTime <= 45) {
-              realPerformance += 7
-            } else if (completionTime <= 55) {
-              realPerformance += 3
-            }
-          } else if (difficulty === "red" && lesserValue <= 0) {
-            if (completionTime <= 60) {
-              realPerformance += 7
-            } else if (completionTime <= 66) {
-              realPerformance += 3
-            }
-          }
           
           clock.classList.add("std-vanished")
           
@@ -1296,24 +1303,33 @@
 
           // console.log("--o ", [completionTime, bonus, totalClicks, clicksInfluenceValue])
           
+          const totalClicks = parseInt(localStorage.getItem("last-number-clicks"))
+          const completionTime = parseInt(localStorage.getItem("last-clock"))
+          let performanceRate = calculusInstance.calculatePerformance(capturedIncorrect.length, captured.length)
+          let performanceRateUpdate = calculusInstance.calculateClicksInfluence(performanceRate, 0.15, totalClicks)
+          let performanceRateUpdateDecay = calculusInstance.calculateTimeInfluence(performanceRateUpdate, completionTime)
+          const punishmentRate = parseFloat(`${calculusInstance.calculatePerformance(performanceRateUpdateDecay, performanceRateUpdate)}`).toFixed(2)
+          const performanceRateScore = calculusInstance.getEndPerformanceRate(performanceRateUpdateDecay)
+          
           // It seems this function only works if the origin loop is ceased, other wise, there will be lots of issues 
-          realPerformance <= 0 
+          performanceRateScore <= 0 
           ? setupProgressBar(0, dexterityBar, dexterityPercentage, "desclassificado!")
-          : setupProgressBar(realPerformance, dexterityBar, dexterityPercentage, "")
+          : setupProgressBar(parseInt(performanceRateScore) > 100 ? 100 : parseInt(performanceRateScore), dexterityBar, dexterityPercentage, performanceRateScore)
           
           afterEndGameArea.classList.remove("std-vanished")
           
-          const stats = [`${completionTime} seg`, `${totalClicks}`, `${clicksInfluenceValue}%`]
-          
+          const stats = [`${completionTime} seg`, `${totalClicks}`, `${punishmentRate}%`]
+
           endGameInfos.forEach((tag, pos) => {
-            realPerformance <= 0 ? tag.textContent = `🚫` : tag.textContent = stats[pos]
+            performanceRateScore <= 0 ? tag.textContent = `🚫` : tag.textContent = stats[pos]
           })
-          
+
           clearInterval(loop)
-          
         }
       })
     }, 1)
+
+    
     
   </script>
 
