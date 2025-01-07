@@ -165,19 +165,24 @@
     }
 
     #settings-area #background-frame #models #model-a {
-      background-image: linear-gradient(15deg, rgb(200, 100, 0), rgb(0, 0, 100), rgb(33, 66, 99));
+      background-image: linear-gradient(15deg, rgb(255, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0));
     }
     #settings-area #background-frame #models #model-b {
-      background-image: linear-gradient(15deg, rgb(100, 0, 0), rgb(25, 0, 25), rgb(0, 0, 100));
+      background-image: linear-gradient(15deg, rgb(200, 200, 0), rgb(200, 0, 0), rgb(100, 0, 0));
     }
     #settings-area #background-frame #models #model-c {
-      background-image: linear-gradient(15deg, rgb(100, 50, 25), rgb(50, 100, 25), rgb(25, 50, 100));
+      background-image: linear-gradient(15deg, rgb(0, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0));
     }
     #settings-area #background-frame #models #model-d {
-      background-image: linear-gradient(15deg, rgb(150, 150, 50), rgb(200, 200, 100), rgb(200, 100, 50));
+      background-image: linear-gradient(15deg, rgb(33, 66, 99), rgb(0, 33, 0), rgb(0, 0, 33));
     }
     #settings-area #background-frame #models #model-e {
-      background-image: linear-gradient(15deg, rgb(255, 66, 99), rgb(255, 0, 200), rgb(255, 0, 100));
+      background-image: linear-gradient(15deg, rgb(200, 100, 100), rgb(100, 200, 100), rgb(100, 100, 200));
+    }
+
+    #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+      color: black;
+      margin-left: .2rem;
     }
 
     #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
@@ -324,10 +329,22 @@
         top: 25.5rem;
         left: 26.5rem;
       }
+      #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+        position: fixed;
+        top: 21.5rem;
+        left: 31.5rem;
+      }
       #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
         position: fixed;
         top: 25.5rem;
         left: 31.5rem;
+      }
+    }
+
+    @media (max-width: 960px) {
+      #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+        top: 34.5rem;
+        left: 35.5rem;
       }
     }
 
@@ -351,6 +368,10 @@
         top: 25rem;
         left: 21.5rem;
       }
+      #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+        top: 22.5rem;
+        left: 31.5rem;
+      }
     }
 
     @media (max-width: 700px) {
@@ -370,6 +391,10 @@
       #settings-area #custom-background-frame #rgb-inputs-frame #third-color {
         top: 23rem;
         left: 18.5rem;
+      }
+      #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+        top: 24.5rem;
+        left: 27rem;
       }
       #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
         top: 27rem;
@@ -407,6 +432,10 @@
         top: 23rem;
         left: 15.5rem;
       }
+      #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+        top: 27rem;
+        left: 27rem;
+      }
       #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
         top: 30rem;
         left: 27rem;
@@ -414,6 +443,10 @@
     }
 
     @media (max-width: 600px) {
+      #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+        top: 27rem;
+        left: 23.5rem;
+      }
       #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
         left: 21.5rem;
       }
@@ -478,7 +511,7 @@
 
       <div id="custom-background-frame" class="flex row going-left gap">
         <div id="rgb-inputs-frame" class="flex row going-center gap">
-          <!-- Classes here sento to DOM -->
+          <!-- Classes here sent to DOM -->
           <div id="first-color" class="flex column going-center std-smooth">
             <span>esquerda</span>
             <input class="rgb" id="red-s1" type="text" size="1" placeholder="cor 1" value="0">
@@ -500,6 +533,7 @@
           <!-- Window with the preview of the background -->
           <div id="user-custom-background-frame" class="flex row going-center std-smooth">
             <p id="user-custom-background"></p>
+            <button id="suggest-btn">sugerir</button>
           </div>
         </div>
       </div>
@@ -699,12 +733,12 @@
     }
 
     const backgroundModels = {
-      a: "linear-gradient(15deg, rgb(200, 100, 0), rgb(0, 0, 100), rgb(33, 66, 99))",
-      b: "linear-gradient(15deg, rgb(100, 0, 0), rgb(25, 0, 25), rgb(0, 0, 100))",
-      c: "linear-gradient(15deg, rgb(100, 50, 25), rgb(50, 100, 25), rgb(25, 50, 100))",
-      d: "linear-gradient(15deg, rgb(150, 150, 50), rgb(200, 200, 100), rgb(200, 100, 50))",
-      e: "linear-gradient(15deg, rgb(255, 66, 99), rgb(255, 0, 200), rgb(255, 0, 100))",
-      custom: "linear-gradient(15deg, rgb(200, 100, 0), rgb(0, 0, 100), rgb(33, 66, 99))"
+      a: "linear-gradient(15deg, rgb(255, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0))",
+      b: "linear-gradient(15deg, rgb(200, 200, 0), rgb(200, 0, 0), rgb(100, 0, 0))",
+      c: "linear-gradient(15deg, rgb(0, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0))",
+      d: "linear-gradient(15deg, rgb(33, 66, 99), rgb(0, 33, 0), rgb(0, 0, 33))",
+      e: "linear-gradient(15deg, rgb(200, 100, 100), rgb(100, 200, 100), rgb(100, 100, 200))",
+      custom: "linear-gradient(15deg, rgb(255, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0))"
     }
 
     const calculusInstance = new RocketMath()
@@ -768,6 +802,7 @@
     const returnTutorialBtn = document.getElementById("tutorial-return-btn")
     const saveBtn = document.getElementById("save-btn")
     const settingsBtn = document.getElementById("game-settings")
+    const suggestBtn = document.getElementById("suggest-btn")
     
     // Arrays
     const buttonsArray = [easyBtn, mediumBtn, hardBtn]
@@ -859,11 +894,77 @@
       settingsArea.style.marginLeft = "25%"
     })
     
+    suggestBtn.addEventListener("click", () => {
+      allCustomBackgroundInputs.forEach(box => {
+        box.value = getIndice(0, 256)
+      })
+    })
+
     const adaptTitleToBackground = (backgroundRef, titleTag) => {
       const newRgb = configureProperRgb(localStorage.getItem(backgroundRef))
       const shades = window.getComputedStyle(titleTag).textShadow.split(" ")
       titleTag.style.color = `rgb(${newRgb.join(", ")})`
       titleTag.style.textShadow = `rgb(${newRgb[2]}, ${newRgb[0]}, ${newRgb[1]}) ${shades[3]} ${shades[4]} ${shades[5]}`
+    }
+
+    // todo
+    const adaptBlockToBackground = (backgroundRef, blocksAmount) => {
+      const rgbValues = []
+      let rgbValuesUpdate = []
+      let rgbValuesUpdateIntegers = []
+      let eachBlockBackgroundImage = []
+      let eachOrder = []
+      let cssStyle = "linear-gradient(15deg, rgb(.,.,.), rgb(.,.,.), rgb(.,.,.))"
+      
+      for (let i = 0; i < blocksAmount; i++) {
+        eachBlockBackgroundImage.push(cssStyle)
+      }
+      
+      const backgroundRgbs = localStorage.getItem(backgroundRef).split("g,")[1]
+
+      for (let i = 0; i < backgroundRgbs.length; i++) {
+        if (!isNaN(backgroundRgbs[i] || backgroundRgbs[i] === ",")) {
+          rgbValues.push(backgroundRgbs[i])
+        }
+      } 
+
+      for (let i = 0; i < rgbValues.length; i++) {
+        if (i > 0) {
+          if (rgbValues[i] === " ") {
+            rgbValuesUpdate.push(",")
+          } else {
+            rgbValuesUpdate.push(rgbValues[i])
+          }
+        }
+      }
+      
+      rgbValuesUpdate = rgbValuesUpdate.join("").split(",")
+
+      for (let i = 0; i < rgbValuesUpdate.length; i++) {
+        rgbValuesUpdateIntegers.push(parseInt(rgbValuesUpdate[i]))
+      }
+
+      for (let i = 0; i < blocksAmount; i++) {
+        const newOrder = []
+        while (newOrder.length != rgbValuesUpdateIntegers.length) {
+          const indice = getIndice(0, rgbValuesUpdateIntegers.length)
+          !newOrder.includes(indice) ? newOrder.push(indice) : null
+        }
+        eachOrder.push(newOrder)
+      } 
+
+      for (let i = 0; i < eachBlockBackgroundImage.length; i++) {
+        eachBlockBackgroundImage[i] = eachBlockBackgroundImage[i].replace(
+          ".,.,.", `${rgbValuesUpdateIntegers[eachOrder[i][0]]},${rgbValuesUpdateIntegers[eachOrder[i][1]]},${rgbValuesUpdateIntegers[eachOrder[i][2]]}`
+        ).replace(
+          ".,.,.", `${rgbValuesUpdateIntegers[eachOrder[i][3]]},${rgbValuesUpdateIntegers[eachOrder[i][4]]},${rgbValuesUpdateIntegers[eachOrder[i][5]]}`
+        ).replace(
+          ".,.,.", `${rgbValuesUpdateIntegers[eachOrder[i][6]]},${rgbValuesUpdateIntegers[eachOrder[i][7]]},${rgbValuesUpdateIntegers[eachOrder[i][8]]}`
+        )
+      }
+
+      return eachBlockBackgroundImage
+
     }
     
     // Pick background choice on settings (only one background visible after "else")
@@ -1190,6 +1291,7 @@
       }
       
       newTag.setAttribute("class", "box flex row going-center")
+      
       containerTag.appendChild(newTag)
     }
 
@@ -1260,13 +1362,18 @@
 
     controlCustomBackground(allCustomBackgroundInputs, userCustomBackground, backgroundModels, "game-background")
 
+    // todo
+    const eachBackgroundImage = adaptBlockToBackground("game-background", numberBlocks - 5)
+
     const loop = setInterval(() => {
       launcherBtn.textContent = correct.textContent === "0" ? "Iniciar" : "Continuar..."
       correct.textContent = captured.length - capturedIncorrect.length
       const spaceshipStats = spaceship.getBoundingClientRect()
       updateShadows(spaceship)
       
-      allRectangles.forEach(rect => {
+      // todo
+      allRectangles.forEach((rect, pos) => {
+        rect.style.backgroundImage = eachBackgroundImage[pos] // todo
         const rectStats = rect.getBoundingClientRect()
         const rectangleCollision = watchForRectangularCollision(spaceshipStats, rectStats, spaceship)
         

@@ -92,12 +92,12 @@ class StorageObject {
 }
 
 const backgroundModels = {
-  a: "linear-gradient(15deg, rgb(200, 100, 0), rgb(0, 0, 100), rgb(33, 66, 99))",
-  b: "linear-gradient(15deg, rgb(100, 0, 0), rgb(25, 0, 25), rgb(0, 0, 100))",
-  c: "linear-gradient(15deg, rgb(100, 50, 25), rgb(50, 100, 25), rgb(25, 50, 100))",
-  d: "linear-gradient(15deg, rgb(150, 150, 50), rgb(200, 200, 100), rgb(200, 100, 50))",
-  e: "linear-gradient(15deg, rgb(255, 66, 99), rgb(255, 0, 200), rgb(255, 0, 100))",
-  custom: "linear-gradient(15deg, rgb(200, 100, 0), rgb(0, 0, 100), rgb(33, 66, 99))"
+  a: "linear-gradient(15deg, rgb(255, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0))",
+  b: "linear-gradient(15deg, rgb(200, 200, 0), rgb(200, 0, 0), rgb(100, 0, 0))",
+  c: "linear-gradient(15deg, rgb(0, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0))",
+  d: "linear-gradient(15deg, rgb(33, 66, 99), rgb(0, 33, 0), rgb(0, 0, 33))",
+  e: "linear-gradient(15deg, rgb(200, 100, 100), rgb(100, 200, 100), rgb(100, 100, 200))",
+  custom: "linear-gradient(15deg, rgb(255, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0))"
 }
 
 const calculusInstance = new RocketMath()
@@ -161,6 +161,7 @@ const rebootBtn = document.getElementById("reboot-btn")
 const returnTutorialBtn = document.getElementById("tutorial-return-btn")
 const saveBtn = document.getElementById("save-btn")
 const settingsBtn = document.getElementById("game-settings")
+const suggestBtn = document.getElementById("suggest-btn")
 
 // Arrays
 const buttonsArray = [easyBtn, mediumBtn, hardBtn]
@@ -252,11 +253,76 @@ settingsBtn.addEventListener("click", () => {
   settingsArea.style.marginLeft = "25%"
 })
 
+suggestBtn.addEventListener("click", () => {
+  allCustomBackgroundInputs.forEach(box => {
+    box.value = getIndice(0, 256)
+  })
+})
+
 const adaptTitleToBackground = (backgroundRef, titleTag) => {
   const newRgb = configureProperRgb(localStorage.getItem(backgroundRef))
   const shades = window.getComputedStyle(titleTag).textShadow.split(" ")
   titleTag.style.color = `rgb(${newRgb.join(", ")})`
   titleTag.style.textShadow = `rgb(${newRgb[2]}, ${newRgb[0]}, ${newRgb[1]}) ${shades[3]} ${shades[4]} ${shades[5]}`
+}
+
+const adaptBlockToBackground = (backgroundRef, blocksAmount) => {
+  const rgbValues = []
+  let rgbValuesUpdate = []
+  let rgbValuesUpdateIntegers = []
+  let eachBlockBackgroundImage = []
+  let eachOrder = []
+  let cssStyle = "linear-gradient(15deg, rgb(.,.,.), rgb(.,.,.), rgb(.,.,.))"
+  
+  for (let i = 0; i < blocksAmount; i++) {
+    eachBlockBackgroundImage.push(cssStyle)
+  }
+  
+  const backgroundRgbs = localStorage.getItem(backgroundRef).split("g,")[1]
+
+  for (let i = 0; i < backgroundRgbs.length; i++) {
+    if (!isNaN(backgroundRgbs[i] || backgroundRgbs[i] === ",")) {
+      rgbValues.push(backgroundRgbs[i])
+    }
+  } 
+
+  for (let i = 0; i < rgbValues.length; i++) {
+    if (i > 0) {
+      if (rgbValues[i] === " ") {
+        rgbValuesUpdate.push(",")
+      } else {
+        rgbValuesUpdate.push(rgbValues[i])
+      }
+    }
+  }
+  
+  rgbValuesUpdate = rgbValuesUpdate.join("").split(",")
+
+  for (let i = 0; i < rgbValuesUpdate.length; i++) {
+    rgbValuesUpdateIntegers.push(parseInt(rgbValuesUpdate[i]))
+  }
+
+  for (let i = 0; i < blocksAmount; i++) {
+    const newOrder = []
+    while (newOrder.length != rgbValuesUpdateIntegers.length) {
+      const indice = getIndice(0, rgbValuesUpdateIntegers.length)
+      !newOrder.includes(indice) ? newOrder.push(indice) : null
+    }
+    eachOrder.push(newOrder)
+  } 
+
+  for (let i = 0; i < eachBlockBackgroundImage.length; i++) {
+    eachBlockBackgroundImage[i] = eachBlockBackgroundImage[i].replace(
+      ".,.,.", `${rgbValuesUpdateIntegers[eachOrder[i][0]]},${rgbValuesUpdateIntegers[eachOrder[i][1]]},${rgbValuesUpdateIntegers[eachOrder[i][2]]}`
+    ).replace(
+      ".,.,.", `${rgbValuesUpdateIntegers[eachOrder[i][3]]},${rgbValuesUpdateIntegers[eachOrder[i][4]]},${rgbValuesUpdateIntegers[eachOrder[i][5]]}`
+    ).replace(
+      ".,.,.", `${rgbValuesUpdateIntegers[eachOrder[i][6]]},${rgbValuesUpdateIntegers[eachOrder[i][7]]},${rgbValuesUpdateIntegers[eachOrder[i][8]]}`
+    )
+  }
+
+  return eachBlockBackgroundImage
+
 }
 
 // Pick background choice on settings (only one background visible after "else")
@@ -652,13 +718,16 @@ createContentForBlocks("difficulty-background", "rect-amount", allRectangles, bl
 
 controlCustomBackground(allCustomBackgroundInputs, userCustomBackground, backgroundModels, "game-background")
 
+const eachBackgroundImage = adaptBlockToBackground("game-background", numberBlocks - 5)
+
 const loop = setInterval(() => {
   launcherBtn.textContent = correct.textContent === "0" ? "Iniciar" : "Continuar..."
   correct.textContent = captured.length - capturedIncorrect.length
   const spaceshipStats = spaceship.getBoundingClientRect()
   updateShadows(spaceship)
   
-  allRectangles.forEach(rect => {
+  allRectangles.forEach((rect, pos) => {
+    rect.style.backgroundImage = eachBackgroundImage[pos]
     const rectStats = rect.getBoundingClientRect()
     const rectangleCollision = watchForRectangularCollision(spaceshipStats, rectStats, spaceship)
     

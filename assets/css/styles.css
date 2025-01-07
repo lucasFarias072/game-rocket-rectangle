@@ -156,19 +156,24 @@ li {
 }
 
 #settings-area #background-frame #models #model-a {
-  background-image: linear-gradient(15deg, rgb(200, 100, 0), rgb(0, 0, 100), rgb(33, 66, 99));
+  background-image: linear-gradient(15deg, rgb(255, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0));
 }
 #settings-area #background-frame #models #model-b {
-  background-image: linear-gradient(15deg, rgb(100, 0, 0), rgb(25, 0, 25), rgb(0, 0, 100));
+  background-image: linear-gradient(15deg, rgb(200, 200, 0), rgb(200, 0, 0), rgb(100, 0, 0));
 }
 #settings-area #background-frame #models #model-c {
-  background-image: linear-gradient(15deg, rgb(100, 50, 25), rgb(50, 100, 25), rgb(25, 50, 100));
+  background-image: linear-gradient(15deg, rgb(0, 0, 0), rgb(33, 66, 99), rgb(0, 0, 0));
 }
 #settings-area #background-frame #models #model-d {
-  background-image: linear-gradient(15deg, rgb(150, 150, 50), rgb(200, 200, 100), rgb(200, 100, 50));
+  background-image: linear-gradient(15deg, rgb(33, 66, 99), rgb(0, 33, 0), rgb(0, 0, 33));
 }
 #settings-area #background-frame #models #model-e {
-  background-image: linear-gradient(15deg, rgb(255, 66, 99), rgb(255, 0, 200), rgb(255, 0, 100));
+  background-image: linear-gradient(15deg, rgb(200, 100, 100), rgb(100, 200, 100), rgb(100, 100, 200));
+}
+
+#settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+  color: black;
+  margin-left: .2rem;
 }
 
 #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
@@ -315,10 +320,22 @@ li {
     top: 25.5rem;
     left: 26.5rem;
   }
+  #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+    position: fixed;
+    top: 21.5rem;
+    left: 31.5rem;
+  }
   #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
     position: fixed;
     top: 25.5rem;
     left: 31.5rem;
+  }
+}
+
+@media (max-width: 960px) {
+  #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+    top: 34.5rem;
+    left: 35.5rem;
   }
 }
 
@@ -342,6 +359,10 @@ li {
     top: 25rem;
     left: 21.5rem;
   }
+  #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+    top: 22.5rem;
+    left: 31.5rem;
+  }
 }
 
 @media (max-width: 700px) {
@@ -361,6 +382,10 @@ li {
   #settings-area #custom-background-frame #rgb-inputs-frame #third-color {
     top: 23rem;
     left: 18.5rem;
+  }
+  #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+    top: 24.5rem;
+    left: 27rem;
   }
   #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
     top: 27rem;
@@ -398,6 +423,10 @@ li {
     top: 23rem;
     left: 15.5rem;
   }
+  #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+    top: 27rem;
+    left: 27rem;
+  }
   #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
     top: 30rem;
     left: 27rem;
@@ -405,6 +434,10 @@ li {
 }
 
 @media (max-width: 600px) {
+  #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #suggest-btn {
+    top: 27rem;
+    left: 23.5rem;
+  }
   #settings-area #custom-background-frame #rgb-inputs-frame #user-custom-background-frame #user-custom-background {
     left: 21.5rem;
   }
