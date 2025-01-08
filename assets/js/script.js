@@ -137,6 +137,7 @@ const dexterityBar = document.getElementById("dexterity-bar")
 const dexterityPercentage = document.getElementById("dexterity-percentage")
 const endGameInfos = [...document.querySelectorAll(".std-criteria")]
 const gameTitle = document.getElementById("game-title")
+const infoBlock = document.getElementById("info-block")
 
 // Sections
 const afterEndGameArea = document.getElementById("after-end-game-area")
@@ -178,6 +179,7 @@ const capturedIncorrect = []
 let clockCounter = 0
 const directions = []
 const pronouns = ["I", "You", "He", "She", "It", "We", "They"]
+const windowLength = window.innerWidth
 
 controlsBtn.addEventListener("click", () => {
   controlWindowsView([menuArea, controlsArea], [0, 1], "std-vanished")
@@ -733,6 +735,14 @@ const loop = setInterval(() => {
     
     // When collision happens in the right place
     if (rectangleCollision && adjectives.includes(rect.textContent)) {
+      const infoBlockLength = parseFloat(window.getComputedStyle(infoBlock).width.split("px")[0])
+      if (parseInt(window.getComputedStyle(infoBlock).right.split("px")) > windowLength + infoBlockLength) {
+        infoBlock.style.right = `${-infoBlockLength}px`
+      } else {
+        infoBlock.style.right = `${parseInt(window.getComputedStyle(infoBlock).right.split("px")) + 1}px`
+        infoBlock.textContent = `💡 ${pronouns[adjectives.indexOf(rect.textContent)]} 📌 ${rect.textContent}`
+      }
+
       if (!captured.includes(rect)) {
         rect.classList.add("std-captured")
         rect.style.color = "transparent"

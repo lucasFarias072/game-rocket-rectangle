@@ -279,6 +279,22 @@
       left: 1rem;
     }
 
+    /* // todo */
+    #spaceship-area #objects-frame #info-block {
+      background-image: linear-gradient(15deg, rgb(200, 200, 100), rgb(200, 100, 200), yellow);
+      border: #222;
+      border-radius: 1.5rem;
+      color: purple;
+      font-size: 1.2rem;
+      padding: 0 1rem;
+      text-shadow: 0 0 1rem purple;
+      z-index: -1;
+      
+      position: fixed;
+      bottom: 1rem;
+      right: 2rem;
+    }
+
     #spaceship-area #objects-frame #spaceship {
       font-size: 2rem;
       transform: rotate(-45deg);
@@ -621,6 +637,8 @@
         <button id="give-up-btn">sair ✋🏻</button>
         <span id="clock">🕰️</span>
         <span id="spaceship">🚀</span>
+        <!-- // todo -->
+        <span id="info-block">💡</span>
       </div>
 
       <div id="partial-report-frame" class="flex column going-center">
@@ -778,6 +796,7 @@
     const dexterityPercentage = document.getElementById("dexterity-percentage")
     const endGameInfos = [...document.querySelectorAll(".std-criteria")]
     const gameTitle = document.getElementById("game-title")
+    const infoBlock = document.getElementById("info-block") // todo
     
     // Sections
     const afterEndGameArea = document.getElementById("after-end-game-area")
@@ -819,6 +838,8 @@
     let clockCounter = 0
     const directions = []
     const pronouns = ["I", "You", "He", "She", "It", "We", "They"]
+    // todo
+    const windowLength = window.innerWidth
 
     controlsBtn.addEventListener("click", () => {
       controlWindowsView([menuArea, controlsArea], [0, 1], "std-vanished")
@@ -907,7 +928,6 @@
       titleTag.style.textShadow = `rgb(${newRgb[2]}, ${newRgb[0]}, ${newRgb[1]}) ${shades[3]} ${shades[4]} ${shades[5]}`
     }
 
-    // todo
     const adaptBlockToBackground = (backgroundRef, blocksAmount) => {
       const rgbValues = []
       let rgbValuesUpdate = []
@@ -1362,7 +1382,6 @@
 
     controlCustomBackground(allCustomBackgroundInputs, userCustomBackground, backgroundModels, "game-background")
 
-    // todo
     const eachBackgroundImage = adaptBlockToBackground("game-background", numberBlocks - 5)
 
     const loop = setInterval(() => {
@@ -1371,14 +1390,23 @@
       const spaceshipStats = spaceship.getBoundingClientRect()
       updateShadows(spaceship)
       
-      // todo
       allRectangles.forEach((rect, pos) => {
-        rect.style.backgroundImage = eachBackgroundImage[pos] // todo
+        rect.style.backgroundImage = eachBackgroundImage[pos]
         const rectStats = rect.getBoundingClientRect()
         const rectangleCollision = watchForRectangularCollision(spaceshipStats, rectStats, spaceship)
         
         // When collision happens in the right place
         if (rectangleCollision && adjectives.includes(rect.textContent)) {
+          
+          // todo
+          const infoBlockLength = parseFloat(window.getComputedStyle(infoBlock).width.split("px")[0])
+          if (parseInt(window.getComputedStyle(infoBlock).right.split("px")) > windowLength + infoBlockLength) {
+            infoBlock.style.right = `${-infoBlockLength}px`
+          } else {
+            infoBlock.style.right = `${parseInt(window.getComputedStyle(infoBlock).right.split("px")) + 1}px`
+            infoBlock.textContent = `💡 ${pronouns[adjectives.indexOf(rect.textContent)]} 📌 ${rect.textContent}`
+          }
+          
           if (!captured.includes(rect)) {
             rect.classList.add("std-captured")
             rect.style.color = "transparent"
