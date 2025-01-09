@@ -279,7 +279,6 @@
       left: 1rem;
     }
 
-    /* // todo */
     #spaceship-area #objects-frame #info-block {
       background-image: linear-gradient(15deg, rgb(200, 200, 100), rgb(200, 100, 200), yellow);
       border: #222;
@@ -294,7 +293,8 @@
       bottom: 1rem;
       right: 2rem;
     }
-
+    
+    /* // todo */
     #spaceship-area #objects-frame #spaceship {
       font-size: 2rem;
       transform: rotate(-45deg);
@@ -306,7 +306,7 @@
       top: 0;
       left: 0;
       
-      border-radius: 70% 0 50% 0;
+      /*border-radius: 70% 0 50% 0;*/
       display: flex;
       align-items: center;
       justify-content: center;
@@ -637,7 +637,6 @@
         <button id="give-up-btn">sair ✋🏻</button>
         <span id="clock">🕰️</span>
         <span id="spaceship">🚀</span>
-        <!-- // todo -->
         <span id="info-block">💡</span>
       </div>
 
@@ -796,7 +795,7 @@
     const dexterityPercentage = document.getElementById("dexterity-percentage")
     const endGameInfos = [...document.querySelectorAll(".std-criteria")]
     const gameTitle = document.getElementById("game-title")
-    const infoBlock = document.getElementById("info-block") // todo
+    const infoBlock = document.getElementById("info-block")
     
     // Sections
     const afterEndGameArea = document.getElementById("after-end-game-area")
@@ -838,7 +837,6 @@
     let clockCounter = 0
     const directions = []
     const pronouns = ["I", "You", "He", "She", "It", "We", "They"]
-    // todo
     const windowLength = window.innerWidth
 
     controlsBtn.addEventListener("click", () => {
@@ -1398,7 +1396,6 @@
         // When collision happens in the right place
         if (rectangleCollision && adjectives.includes(rect.textContent)) {
           
-          // todo
           const infoBlockLength = parseFloat(window.getComputedStyle(infoBlock).width.split("px")[0])
           if (parseInt(window.getComputedStyle(infoBlock).right.split("px")) > windowLength + infoBlockLength) {
             infoBlock.style.right = `${-infoBlockLength}px`
